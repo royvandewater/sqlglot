@@ -568,3 +568,11 @@ class TestExecutor(unittest.TestCase):
         result = execute("SELECT A AS A FROM X", tables={"x": [{"a": 1}]})
         self.assertEqual(result.columns, ("A",))
         self.assertEqual(result.rows, [(1,)])
+
+    def test_select_order_preserved(self):
+        result = execute(
+            'SELECT id, name, id FROM table_a;',
+            tables={"table_a": [{"id": 1, "name": "a"}, {"id": 2, "name": "b"}]},
+        )
+        self.assertEqual(result.columns, ("id", "name", "id"))
+        self.assertEqual(result.rows, [(1, "a", 1), (2, "b", 2)])
